@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}View Attendance - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-eye"></i> View Attendance</h2>
+    <a href="{{ url_for('attendance.mark_attendance') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Mark Attendance</a>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label for="class_id" class="form-label">Class</label>
+                <select class="form-select" id="class_id" name="class_id" onchange="this.form.submit()">
+                    <option value="">Select Class</option>
+                    {% for cls in classes %}
+                    <option value="{{ cls[0] }}" {{ 'selected' if selected_class == cls[0] else '' }}>{{ cls[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="section_id" class="form-label">Section</label>
+                <select class="form-select" id="section_id" name="section_id" onchange="this.form.submit()">
+                    <option value="">Select Section</option>
+                    {% for sec in sections %}
+                    <option value="{{ sec[0] }}" data-class="{{ sec[2] }}" {{ 'selected' if selected_section == sec[0] else '' }}>{{ sec[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date" name="date" value="{{ attendance_date }}" required onchange="this.form.submit()">
+            </div>
+            <div class="col-md-3">
+                <label for="subject_id" class="form-label">Subject (Optional)</label>
+                <select class="form-select" id="subject_id" name="subject_id" onchange="this.form.submit()">
+                    <option value="">All Subjects</option>
+                    {% for subj in subjects %}
+                    <option value="{{ subj[0] }}" {{ 'selected' if selected_subject == subj[0] else '' }}>{{ subj[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Attendance Display -->
+{% if students %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Attendance for {{ attendance_date }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Admission No.</th>
+                        <th>Student Name</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    {% set student_id = student[0] %}
+                    {% set record = attendance_records.get(student_id, {}) %}
+                    <tr>
+                        <td><strong>{{ student[1] }}</strong></td>
+                        <td>{{ student[2] }} {{ student[3] }}</td>
+                        <td>
+                            {% if record.status %}
+                            <span class="badge bg-{{ 'success' if record.status == 'present' else 'danger' if record.status == 'absent' else 'warning' if record.status == 'late' else 'info' }}">
+                                {{ record.status.title() }}
+                            </span>
+                            {% else %}
+                            <span class="badge bg-secondary">Not Marked</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ record.remarks or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> Please select class, section, and date to view attendance.
+</div>
+{% endif %}
+
+{% block extra_js %}
+<script>
+document.getElementById('class_id')?.addEventListener('change', function() {
+    const classId = this.value;
+    const sectionSelect = document.getElementById('section_id');
+    if (!sectionSelect) return;
+    
+    const options = sectionSelect.querySelectorAll('option[data-class]');
+    sectionSelect.innerHTML = '<option value="">Select Section</option>';
+    
+    options.forEach(option => {
+        if (!classId || option.getAttribute('data-class') == classId) {
+            sectionSelect.appendChild(option.cloneNode(true));
+        }
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

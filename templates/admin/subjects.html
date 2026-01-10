@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Subject Management - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-book"></i> Subject Management</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Add New Subject</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.add_subject') }}">
+                    <div class="mb-3">
+                        <label for="subject_name" class="form-label">Subject Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="subject_name" name="subject_name" required placeholder="e.g., Mathematics">
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject_code" class="form-label">Subject Code</label>
+                        <input type="text" class="form-control" id="subject_code" name="subject_code" placeholder="e.g., MATH">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-plus-circle"></i> Add Subject</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">All Subjects</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Subject Name</th>
+                                <th>Code</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if subjects %}
+                            {% for subj in subjects %}
+                            <tr>
+                                <td><strong>{{ subj[1] }}</strong></td>
+                                <td>{{ subj[2] or '-' }}</td>
+                                <td>{{ subj[3] or '-' }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('admin.delete_subject', subject_id=subj[0]) }}" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No subjects found.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

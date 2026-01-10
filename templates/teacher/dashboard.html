@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-speedometer2"></i> Teacher Dashboard</h2>
+    <span class="badge bg-success">Welcome, {{ teacher[1] }} {{ teacher[2] }}</span>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Teacher Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Employee ID:</strong> {{ teacher[3] }}</p>
+                        <p><strong>Name:</strong> {{ teacher[1] }} {{ teacher[2] }}</p>
+                        <p><strong>Phone:</strong> {{ teacher[4] or 'N/A' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Email:</strong> {{ teacher[5] or 'N/A' }}</p>
+                        <p><strong>Total Notes Uploaded:</strong> <span class="badge bg-primary">{{ total_notes or 0 }}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-building"></i> Assigned Classes</h5>
+            </div>
+            <div class="card-body">
+                {% if assigned_classes %}
+                <ul class="list-group list-group-flush">
+                    {% for cls in assigned_classes %}
+                    <li class="list-group-item">{{ cls[1] }} - {{ cls[2] }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No classes assigned.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-book"></i> Assigned Subjects</h5>
+            </div>
+            <div class="card-body">
+                {% if assigned_subjects %}
+                <ul class="list-group list-group-flush">
+                    {% for subj in assigned_subjects %}
+                    <li class="list-group-item">
+                        <strong>{{ subj[1] }}</strong> ({{ subj[2] }})
+                        {% if subj[3] %}<br><small class="text-muted">{{ subj[3] }}{% if subj[4] %} - {{ subj[4] }}{% endif %}</small>{% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No subjects assigned.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <a href="{{ url_for('notes.upload_notes') }}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-cloud-upload"></i><br>Upload Notes
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('notes.list_notes') }}" class="btn btn-outline-info w-100">
+                            <i class="bi bi-file-earmark-text"></i><br>My Notes
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('attendance.mark_attendance') }}" class="btn btn-outline-success w-100">
+                            <i class="bi bi-calendar-check"></i><br>Mark Attendance
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('student.list_students') }}" class="btn btn-outline-warning w-100">
+                            <i class="bi bi-people"></i><br>View Students
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

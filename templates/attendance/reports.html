@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance Reports - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-graph-up"></i> Attendance Reports</h2>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-calendar-day"></i> Daily Report</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('attendance.daily_report') }}">
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="class_id" class="form-label">Class (Optional)</label>
+                        <select class="form-select" id="class_id" name="class_id">
+                            <option value="">All Classes</option>
+                            {% for cls in classes %}
+                            <option value="{{ cls[0] }}">{{ cls[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Generate Report</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-building"></i> Class-Wise Report</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('attendance.class_wise_report') }}">
+                    <div class="mb-3">
+                        <label for="class_id" class="form-label">Class <span class="text-danger">*</span></label>
+                        <select class="form-select" id="class_id" name="class_id" required>
+                            <option value="">Select Class</option>
+                            {% for cls in classes %}
+                            <option value="{{ cls[0] }}">{{ cls[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="section_id" class="form-label">Section <span class="text-danger">*</span></label>
+                        <select class="form-select" id="section_id" name="section_id" required>
+                            <option value="">Select Section</option>
+                            {% for sec in sections %}
+                            <option value="{{ sec[0] }}" data-class="{{ sec[2] }}">{{ sec[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="end_date" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100"><i class="bi bi-search"></i> Generate Report</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-person-check"></i> Student Report</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">View individual student attendance report from the student list or dashboard.</p>
+                <a href="{{ url_for('student.list_students') }}" class="btn btn-info w-100"><i class="bi bi-people"></i> View Students</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Filter sections based on class
+document.getElementById('class_id')?.addEventListener('change', function() {
+    const classId = this.value;
+    const sectionSelect = document.getElementById('section_id');
+    if (!sectionSelect) return;
+    
+    const options = sectionSelect.querySelectorAll('option[data-class]');
+    sectionSelect.innerHTML = '<option value="">Select Section</option>';
+    
+    options.forEach(option => {
+        if (!classId || option.getAttribute('data-class') == classId) {
+            sectionSelect.appendChild(option.cloneNode(true));
+        }
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

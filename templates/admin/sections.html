@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Section Management - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-layers"></i> Section Management</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Add New Section</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.add_section') }}">
+                    <div class="mb-3">
+                        <label for="section_name" class="form-label">Section Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="section_name" name="section_name" required placeholder="e.g., A, B, C">
+                    </div>
+                    <div class="mb-3">
+                        <label for="class_id" class="form-label">Class <span class="text-danger">*</span></label>
+                        <select class="form-select" id="class_id" name="class_id" required>
+                            <option value="">Select Class</option>
+                            {% for cls in classes %}
+                            <option value="{{ cls[0] }}">{{ cls[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="capacity" class="form-label">Capacity</label>
+                        <input type="number" class="form-control" id="capacity" name="capacity" value="40" min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="academic_year_id" class="form-label">Academic Year</label>
+                        <select class="form-select" id="academic_year_id" name="academic_year_id">
+                            <option value="">Select Academic Year</option>
+                            {% for ay in academic_years %}
+                            <option value="{{ ay[0] }}" {{ 'selected' if ay[2] else '' }}>{{ ay[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-plus-circle"></i> Add Section</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">All Sections</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Section</th>
+                                <th>Class</th>
+                                <th>Capacity</th>
+                                <th>Academic Year</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if sections %}
+                            {% for sec in sections %}
+                            <tr>
+                                <td><strong>{{ sec[1] }}</strong></td>
+                                <td>{{ sec[2] }}</td>
+                                <td>{{ sec[3] }}</td>
+                                <td>{{ sec[4] or '-' }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('admin.delete_section', section_id=sec[0]) }}" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No sections found.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

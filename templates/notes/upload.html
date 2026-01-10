@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Notes - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-cloud-upload"></i> Upload Notes</h2>
+    <a href="{{ url_for('notes.list_notes') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="title" name="title" required placeholder="e.g., Chapter 5 - Mathematics Notes">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="subject_id" class="form-label">Subject <span class="text-danger">*</span></label>
+                        <select class="form-select" id="subject_id" name="subject_id" required>
+                            <option value="">Select Subject</option>
+                            {% for subject in subjects %}
+                            <option value="{{ subject[0] }}">{{ subject[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="class_id" class="form-label">Class <span class="text-danger">*</span></label>
+                            <select class="form-select" id="class_id" name="class_id" required>
+                                <option value="">Select Class</option>
+                                {% for cls in classes %}
+                                <option value="{{ cls[0] }}">{{ cls[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="section_id" class="form-label">Section (Optional)</label>
+                            <select class="form-select" id="section_id" name="section_id">
+                                <option value="">All Sections</option>
+                                {% for sec in sections %}
+                                <option value="{{ sec[0] }}" data-class="{{ sec[2] }}">{{ sec[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="file" class="form-label">File <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="file" name="file" required accept=".pdf,.doc,.docx,.ppt,.pptx">
+                        <small class="form-text text-muted">Allowed formats: PDF, DOC, DOCX, PPT, PPTX (Max 16MB)</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Brief description of the notes..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="academic_year_id" class="form-label">Academic Year</label>
+                        <select class="form-select" id="academic_year_id" name="academic_year_id">
+                            <option value="">Current Academic Year</option>
+                            {% for ay in academic_years %}
+                            <option value="{{ ay[0] }}">{{ ay[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('notes.list_notes') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-upload"></i> Upload Notes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.getElementById('class_id').addEventListener('change', function() {
+    const classId = this.value;
+    const sectionSelect = document.getElementById('section_id');
+    const options = sectionSelect.querySelectorAll('option[data-class]');
+    
+    sectionSelect.innerHTML = '<option value="">All Sections</option>';
+    
+    options.forEach(option => {
+        if (!classId || option.getAttribute('data-class') == classId) {
+            sectionSelect.appendChild(option.cloneNode(true));
+        }
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

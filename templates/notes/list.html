@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Notes - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-file-earmark-text"></i> Study Notes</h2>
+    {% if session.role == 'teacher' %}
+    <a href="{{ url_for('notes.upload_notes') }}" class="btn btn-primary"><i class="bi bi-cloud-upload"></i> Upload Notes</a>
+    {% endif %}
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label for="subject_id" class="form-label">Subject</label>
+                <select class="form-select" id="subject_id" name="subject_id">
+                    <option value="">All Subjects</option>
+                    {% for subject in subjects %}
+                    <option value="{{ subject[0] }}" {{ 'selected' if selected_subject == subject[0] else '' }}>{{ subject[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="class_id" class="form-label">Class</label>
+                <select class="form-select" id="class_id" name="class_id">
+                    <option value="">All Classes</option>
+                    {% for cls in classes %}
+                    <option value="{{ cls[0] }}" {{ 'selected' if selected_class == cls[0] else '' }}>{{ cls[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="search" class="form-label">Search</label>
+                <input type="text" class="form-control" id="search" name="search" value="{{ search_query or '' }}" placeholder="Search notes...">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Notes List -->
+<div class="row">
+    {% if notes %}
+    {% for note in notes %}
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ note[1] }}</h5>
+                <p class="card-text text-muted small mb-2">
+                    <i class="bi bi-book"></i> {{ note[6] }} | 
+                    <i class="bi bi-building"></i> {{ note[7] }}{% if note[8] %} - {{ note[8] }}{% endif %}
+                </p>
+                <p class="card-text small text-muted">
+                    <i class="bi bi-person"></i> {{ note[9] }} {{ note[10] }} | 
+                    <i class="bi bi-calendar"></i> {{ note[5].strftime('%Y-%m-%d') if note[5] else 'N/A' }} |
+                    <i class="bi bi-file-earmark"></i> {{ note[2] }}
+                    {% if note[4] %}
+                    | <span class="badge bg-secondary">{{ note[4].upper() }}</span>
+                    {% endif %}
+                </p>
+                <div class="mt-3">
+                    <a href="{{ url_for('notes.download_notes', note_id=note[0]) }}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                    {% if session.role in ['teacher', 'admin'] %}
+                    <form method="POST" action="{{ url_for('notes.delete_notes', note_id=note[0]) }}" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i> No notes found.
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

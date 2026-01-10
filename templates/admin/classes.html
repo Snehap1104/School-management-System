@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Class Management - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-building"></i> Class Management</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Add New Class</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.add_class') }}">
+                    <div class="mb-3">
+                        <label for="class_name" class="form-label">Class Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="class_name" name="class_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="class_code" class="form-label">Class Code</label>
+                        <input type="text" class="form-control" id="class_code" name="class_code">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="academic_year_id" class="form-label">Academic Year</label>
+                        <select class="form-select" id="academic_year_id" name="academic_year_id">
+                            <option value="">Select Academic Year</option>
+                            {% for ay in academic_years %}
+                            <option value="{{ ay[0] }}" {{ 'selected' if ay[2] else '' }}>{{ ay[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-plus-circle"></i> Add Class</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">All Classes</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Class Name</th>
+                                <th>Code</th>
+                                <th>Academic Year</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if classes %}
+                            {% for cls in classes %}
+                            <tr>
+                                <td><strong>{{ cls[1] }}</strong></td>
+                                <td>{{ cls[2] or '-' }}</td>
+                                <td>{{ cls[4] or '-' }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('admin.delete_class', class_id=cls[0]) }}" class="d-inline" onsubmit="return confirm('Are you sure? This will delete all related data!');">
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No classes found.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

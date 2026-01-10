@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Teachers - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person-badge"></i> Teachers</h2>
+    <a href="{{ url_for('teacher.add_teacher') }}" class="btn btn-primary"><i class="bi bi-person-plus"></i> Add Teacher</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Qualification</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if teachers %}
+                    {% for teacher in teachers %}
+                    <tr>
+                        <td><strong>{{ teacher[1] }}</strong></td>
+                        <td>{{ teacher[2] }} {{ teacher[3] }}</td>
+                        <td>{{ teacher[4] or '-' }}</td>
+                        <td>{{ teacher[5] or '-' }}</td>
+                        <td>{{ teacher[6] or '-' }}</td>
+                        <td><span class="badge bg-{{ 'success' if teacher[7] else 'secondary' }}">{{ 'Active' if teacher[7] else 'Inactive' }}</span></td>
+                        <td>
+                            <a href="{{ url_for('teacher.edit_teacher', teacher_id=teacher[0]) }}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                            <form method="POST" action="{{ url_for('teacher.delete_teacher', teacher_id=teacher[0]) }}" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                                <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">No teachers found.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

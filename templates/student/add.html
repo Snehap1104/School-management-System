@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Add Student - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person-plus"></i> Add Student</h2>
+    <a href="{{ url_for('student.list_students') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="date_of_birth" class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select class="form-select" id="gender" name="gender">
+                                <option value="">Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="photo" class="form-label">Photo</label>
+                            <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="phone" name="phone">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <textarea class="form-control" id="address" name="address" rows="2"></textarea>
+                    </div>
+                    
+                    <hr>
+                    <h5>Parent Information</h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="parent_name" class="form-label">Parent Name</label>
+                            <input type="text" class="form-control" id="parent_name" name="parent_name">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="parent_phone" class="form-label">Parent Phone</label>
+                            <input type="tel" class="form-control" id="parent_phone" name="parent_phone">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="parent_email" class="form-label">Parent Email</label>
+                            <input type="email" class="form-control" id="parent_email" name="parent_email">
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    <h5>Academic Information</h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="class_id" class="form-label">Class</label>
+                            <select class="form-select" id="class_id" name="class_id">
+                                <option value="">Select Class</option>
+                                {% for cls in classes %}
+                                <option value="{{ cls[0] }}">{{ cls[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="section_id" class="form-label">Section</label>
+                            <select class="form-select" id="section_id" name="section_id">
+                                <option value="">Select Section</option>
+                                {% for sec in sections %}
+                                <option value="{{ sec[0] }}" data-class="{{ sec[2] }}">{{ sec[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="admission_date" class="form-label">Admission Date</label>
+                            <input type="date" class="form-control" id="admission_date" name="admission_date">
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for('student.list_students') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Student</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Filter sections based on selected class
+document.getElementById('class_id').addEventListener('change', function() {
+    const classId = this.value;
+    const sectionSelect = document.getElementById('section_id');
+    const options = sectionSelect.querySelectorAll('option[data-class]');
+    
+    sectionSelect.innerHTML = '<option value="">Select Section</option>';
+    
+    options.forEach(option => {
+        if (!classId || option.getAttribute('data-class') == classId) {
+            sectionSelect.appendChild(option.cloneNode(true));
+        }
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

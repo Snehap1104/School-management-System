@@ -1,0 +1,89 @@
+================================================================================
+    SCHOOL MANAGEMENT SYSTEM - HOW TO RUN
+================================================================================
+
+📌 IMPORTANT: Use 'py' command on Windows (not 'python')
+
+================================================================================
+STEP 1: INSTALL DEPENDENCIES (If not already done)
+================================================================================
+
+    py -m pip install -r requirements.txt
+
+================================================================================
+STEP 2: SETUP DATABASE
+================================================================================
+
+A. Create Database:
+   Open MySQL and run:
+   CREATE DATABASE school_management;
+
+B. Import Schema:
+   mysql -u root -p school_management < database.sql
+
+C. Configure Password:
+   Edit config.py (line 11):
+   MYSQL_PASSWORD = 'your_mysql_password_here'
+
+================================================================================
+STEP 3: INITIALIZE ADMIN USER
+================================================================================
+
+    py init_db.py
+
+================================================================================
+STEP 4: RUN APPLICATION
+================================================================================
+
+Method 1 (Easiest):
+    Double-click: run.bat
+
+Method 2 (Command Line):
+    py app.py
+
+================================================================================
+STEP 5: ACCESS APPLICATION
+================================================================================
+
+Open browser: http://localhost:5000
+
+Login Credentials:
+    Username: admin
+    Password: admin123
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+❌ Error: "Can't connect to MySQL"
+   → Check MySQL is running
+   → Update password in config.py
+   → Test: mysql -u root -p
+
+❌ Error: "Table doesn't exist"
+   → Import database.sql file
+
+❌ Error: "ModuleNotFoundError"
+   → Run: py -m pip install -r requirements.txt
+
+❌ Error: "Port 5000 in use"
+   → Change port in app.py (line 58) to 5001
+
+================================================================================
+QUICK TEST
+================================================================================
+
+1. Run: py app.py
+2. Should see: "Running on http://127.0.0.1:5000"
+3. Open browser → http://localhost:5000
+4. Login with admin/admin123
+5. You should see the dashboard! ✅
+
+================================================================================
+
+Need more details? Check:
+- QUICK_START.md (quick instructions)
+- SETUP_GUIDE.md (detailed guide)
+- README.md (complete documentation)
+
+================================================================================

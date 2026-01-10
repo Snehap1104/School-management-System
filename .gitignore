@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+env/
+ENV/
+
+# Flask
+instance/
+.webassets-cache
+
+# Uploads (important for SMS project)
+static/uploads/
+uploads/
+
+# MySQL / DB
+*.db
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log

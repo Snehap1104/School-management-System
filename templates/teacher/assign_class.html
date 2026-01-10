@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Assign Class Teacher - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person-check"></i> Assign Class Teacher</h2>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="teacher_id" class="form-label">Teacher <span class="text-danger">*</span></label>
+                        <select class="form-select" id="teacher_id" name="teacher_id" required>
+                            <option value="">Select Teacher</option>
+                            {% for teacher in teachers %}
+                            <option value="{{ teacher[0] }}">{{ teacher[1] }} - {{ teacher[2] }} {{ teacher[3] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="class_id" class="form-label">Class <span class="text-danger">*</span></label>
+                            <select class="form-select" id="class_id" name="class_id" required>
+                                <option value="">Select Class</option>
+                                {% for cls in classes %}
+                                <option value="{{ cls[0] }}">{{ cls[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="section_id" class="form-label">Section <span class="text-danger">*</span></label>
+                            <select class="form-select" id="section_id" name="section_id" required>
+                                <option value="">Select Section</option>
+                                {% for sec in sections %}
+                                <option value="{{ sec[0] }}" data-class="{{ sec[2] }}">{{ sec[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="academic_year_id" class="form-label">Academic Year</label>
+                        <select class="form-select" id="academic_year_id" name="academic_year_id">
+                            <option value="">Current Academic Year</option>
+                            {% for ay in academic_years %}
+                            <option value="{{ ay[0] }}">{{ ay[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Assign</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.getElementById('class_id').addEventListener('change', function() {
+    const classId = this.value;
+    const sectionSelect = document.getElementById('section_id');
+    const options = sectionSelect.querySelectorAll('option[data-class]');
+    
+    sectionSelect.innerHTML = '<option value="">Select Section</option>';
+    
+    options.forEach(option => {
+        if (!classId || option.getAttribute('data-class') == classId) {
+            sectionSelect.appendChild(option.cloneNode(true));
+        }
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

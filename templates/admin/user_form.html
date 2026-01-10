@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit' if user else 'Add' }} User - SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person"></i> {{ 'Edit' if user else 'Add' }} User</h2>
+    <a href="{{ url_for('admin.users') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="username" name="username" value="{{ user[1] if user else '' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user[2] if user else '' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password {{ '(leave blank to keep unchanged)' if user else '<span class="text-danger">*</span>' }}</label>
+                        <input type="password" class="form-control" id="password" name="password" {{ 'placeholder="Leave blank to keep unchanged"' if user else 'required' }}>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role <span class="text-danger">*</span></label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="admin" {{ 'selected' if user and user[4] == 'admin' else '' }}>Admin</option>
+                            <option value="teacher" {{ 'selected' if user and user[4] == 'teacher' else '' }}>Teacher</option>
+                            <option value="student" {{ 'selected' if user and user[4] == 'student' else '' }}>Student</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {{ 'checked' if user and user[5] else 'checked' if not user else '' }}>
+                        <label class="form-check-label" for="is_active">Active</label>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
